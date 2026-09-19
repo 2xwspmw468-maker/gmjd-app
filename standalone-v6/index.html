@@ -1,0 +1,145 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090e19"><title>Prop Hedge v6</title>
+<style>
+:root{--b:#090e19;--c:#111827;--c2:#0b1322;--l:#26344c;--t:#f4f7fd;--m:#98a4ba;--a:#7da2ff;--g:#7dd3a8;--r:#ff8896}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;background:var(--b);color:var(--t);font-family:Arial,Helvetica,sans-serif;min-height:100vh}.app{max-width:760px;margin:auto;padding:18px 14px 28px}.head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.head h1{font-size:26px;margin:0}.head p{font-size:12px;color:var(--m);margin:5px 0}.pill{font-size:11px;background:#17233a;border:1px solid #2a3d63;color:#bfd0ff;border-radius:999px;padding:6px 9px;font-weight:800}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;background:#0d1524;border:1px solid var(--l);padding:6px;border-radius:14px;margin:14px 0;position:sticky;top:8px;z-index:3}.tabs button{border:0;background:transparent;color:var(--m);padding:11px 5px;border-radius:9px;font-weight:800;font-size:14px}.tabs button.on{background:#22314e;color:#fff}.page{display:none}.page.on{display:block}.card{background:var(--c);border:1px solid var(--l);border-radius:18px;padding:16px;margin-bottom:12px}.card h2{font-size:18px;margin:0 0 14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.wide{grid-column:1/-1}.hidden{display:none!important}@media(max-width:560px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}}label{font-size:12px;color:var(--m);display:block}input,select{display:block;width:100%;margin-top:5px;padding:13px 12px;border-radius:12px;border:1px solid var(--l);background:var(--c2);color:#fff;font-size:16px;outline:none}input:disabled{opacity:.4}.primary,.sub,.win,.loss{border:0;border-radius:12px;padding:13px 14px;font-size:15px;font-weight:900}.primary{width:100%;margin-top:14px;background:var(--a);color:#07111f}.hint{font-size:12px;color:var(--m);line-height:1.5;margin:12px 0 0}.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}.kpi,.box,.scenario,.hist{background:var(--c2);border:1px solid var(--l);border-radius:14px;padding:13px}.kpi b{font-size:21px;display:block}.kpi span{font-size:11px;color:var(--m);display:block;margin-top:4px}.box{margin-top:10px}.box h3,.scenario h3{font-size:14px;margin:0 0 8px}.row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed var(--l)}.row:last-child{border:0}.row span{font-size:13px;color:var(--m)}.row b{font-size:14px;text-align:right}.green{color:var(--g)}.red{color:var(--r)}.badge{font-size:11px;font-weight:900;padding:5px 8px;border-radius:999px}.live{background:#1d3155;color:#c8d8ff}.pass{background:#16392b;color:#a4f0c6}.dead{background:#48202a;color:#ffc0ca}.scens{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}@media(max-width:560px){.scens{grid-template-columns:1fr}}.scenario div{display:flex;justify-content:space-between;font-size:12px;padding:4px 0}.scenario span{color:var(--m)}.twobtn{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.win{background:var(--g);color:#071c13}.loss{background:var(--r);color:#2a070d}.subs{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}.sub{background:#22314e;color:#fff}.sub:disabled{opacity:.4}.hist{margin-bottom:9px}.histtop{display:flex;justify-content:space-between;gap:10px;align-items:center}.hist p{font-size:12px;color:var(--m);line-height:1.5;margin:7px 0 0}.empty{text-align:center;color:var(--m);padding:24px}.foot{font-size:11px;color:#7f8ba0;line-height:1.45;padding:3px}
+#tree{width:min(1900px,calc(100vw - 24px));margin-left:50%;transform:translateX(-50%)}#tree>.card{width:100%;padding:18px}
+.treeWrap{width:100%;overflow:auto;padding:10px 4px 22px;-webkit-overflow-scrolling:touch}
+.treeRoot{display:block;width:max-content;min-width:100%}.branchCol{width:max-content;flex:0 0 auto}.treeNodeCard{width:270px;margin:0 auto;background:var(--c2);border:1px solid var(--l);border-radius:14px;padding:12px}.treeNodeCard.winNode{border-color:#27543f}.treeNodeCard.lossNode{border-color:#61303a}
+.treeChildren{display:flex;width:max-content;min-width:100%;justify-content:center;gap:18px;align-items:flex-start;margin-top:24px;position:relative}.treeChildren:before{content:"";position:absolute;top:-13px;left:25%;right:25%;border-top:1px solid #3b4d6c}.branchCol>.treeChildren>.branchCol{position:relative}.branchCol>.treeChildren>.branchCol:before{content:"";position:absolute;top:-24px;left:50%;height:12px;border-left:1px solid #3b4d6c}
+.treeNodeHead{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:7px}.treeNodeTitle{display:flex;align-items:center;gap:7px;font-weight:900;font-size:13px}.branchTag{display:inline-flex;align-items:center;justify-content:center;min-width:25px;height:25px;padding:0 7px;border-radius:999px;font-size:11px;font-weight:900}.branchTag.w{background:#16392b;color:#a4f0c6}.branchTag.l{background:#48202a;color:#ffc0ca}.branchTag.s{background:#1d3155;color:#c8d8ff}.treeLines{font-size:11px;color:var(--m);line-height:1.55}.treeLines b{color:#fff}.treeCut{font-size:11px;color:#ffd166;line-height:1.45;margin:10px 0}.treeNote{font-size:11px;color:var(--m);line-height:1.5;margin:0 0 12px}
+.jumpRef{width:270px;margin:0 auto;background:#10192a;border:1px dashed #7da2ff;border-radius:14px;padding:12px;color:var(--t);text-align:left;cursor:pointer}.jumpRef:hover{background:#16233a}.jumpRef .jumpTitle{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:900}.jumpRef .jumpText{font-size:11px;color:var(--m);line-height:1.45;margin-top:7px}.jumpRef .jumpGo{display:inline-block;margin-top:8px;color:#9fbbff;font-size:11px;font-weight:900}.treeNodeCard.flash{animation:treeFlash 1.4s ease}@keyframes treeFlash{0%,100%{box-shadow:none}35%{box-shadow:0 0 0 3px rgba(125,162,255,.8),0 0 28px rgba(125,162,255,.45)}}@media(max-width:560px){.tabs button{font-size:12px;padding:10px 2px}#tree{width:calc(100vw - 10px)}#tree>.card{padding:12px}.treeChildren{gap:10px}.treeNodeCard,.jumpRef{width:230px}}
+</style></head><body><main class="app">
+<div class="head"><div><h1>Prop Hedge <span style="font-size:12px;color:#7da2ff;vertical-align:middle">v6</span></h1><p>Dynamischer Hedge-Rechner</p></div><div class="pill">Break-even bei Fail</div></div>
+<nav class="tabs"><button class="tab on" data-p="rules">Regeln</button><button class="tab" data-p="calc">Berechnen</button><button class="tab" data-p="hist">Verlauf</button><button class="tab" data-p="tree">Stammbaum</button></nav>
+
+<section id="rules" class="page on"><div class="card"><h2>Prop-Firm-Regeln</h2><div class="grid">
+<label class="wide">Konto-Typ<select id="accountType"><option value="challenge">Challenge</option><option value="funded">Funded-Konto</option></select></label>
+<label>Profit Target ($)<input id="target" type="number" inputmode="decimal" value="3000"></label>
+<label>Daily Loss Limit ($)<input id="daily" type="number" inputmode="decimal" value="1000"></label>
+<label>Max Drawdown ($)<input id="dd" type="number" inputmode="decimal" value="2000"></label>
+<label>Drawdown-Typ<select id="type"><option value="static">Static</option><option value="eod">End-of-Day Trailing → Static</option></select></label>
+<label>Static ab Profit ($)<input id="lock" type="number" inputmode="decimal" value="2100"></label>
+<label>Daily Consistency (%)<input id="cons" type="number" inputmode="decimal" value="0"></label>
+<label class="challengeOnly">Challenge-Gebühr ($)<input id="challengeFee" type="number" inputmode="decimal" value="45"></label>
+<label class="challengeOnly">Aktivierungsgebühr bei Bestehen ($)<input id="activationFee" type="number" inputmode="decimal" value="100"></label>
+<label class="fundedOnly wide hidden">Bisher für die Challenge ausgegeben ($)<input id="fundedCost" type="number" inputmode="decimal" value="212.50"></label>
+</div><p class="hint">Du wählst zuerst Challenge oder Funded-Konto. Danach gibst du nur Regeln und die dazugehörigen Kosten ein. Risiko, Gewinnziel, CRV, Hedge-Quote, P&amp;L und EOD-Peak berechnet die App selbst.</p><button id="apply" class="primary">Berechnen</button></div></section>
+
+<section id="calc" class="page"><div class="card"><h2>Aktueller Zustand</h2><div class="kpis">
+<div class="kpi"><b id="pnl">$0.00</b><span>Prop-P&amp;L</span></div><div class="kpi"><b id="oc">$45.00</b><span>Offene Kostenbasis</span></div>
+<div class="kpi"><b id="fl">-$2,000.00</b><span>Fail-Floor</span></div><div class="kpi"><b id="peak">$0.00</b><span>EOD-Peak</span></div></div>
+<div class="box"><h3>Nächster Prop-Trade</h3><div class="row"><span>Risiko</span><b id="pr">—</b></div><div class="row"><span>Gewinnziel</span><b id="pg">—</b></div><div class="row"><span>CRV</span><b id="rr">—</b></div><div class="row"><span>Effektives Gesamtziel</span><b id="et">—</b></div></div>
+<div class="box"><h3>Echtgeld-Hedge</h3><div class="row"><span>Hedge-Quote</span><b id="hq">—</b></div><div class="row"><span>Risiko bei Prop-Gewinn</span><b class="red" id="hr">—</b></div><div class="row"><span>Gewinn bei Prop-Verlust</span><b class="green" id="hg">—</b></div><div class="row"><span>Hedge-CRV</span><b id="hrr">—</b></div><div class="row"><span>Status</span><b id="st">—</b></div></div>
+<div class="scens"><div class="scenario"><h3 class="green">Wenn Gewinn</h3><div><span>Prop-P&amp;L</span><b id="wp">—</b></div><div><span>Offene Kosten</span><b id="wc">—</b></div><div><span>Fail-Floor</span><b id="wf">—</b></div></div><div class="scenario"><h3 class="red">Wenn Verlust</h3><div><span>Prop-P&amp;L</span><b id="lp">—</b></div><div><span>Offene Kosten</span><b id="lc">—</b></div><div><span>Fail-Floor</span><b id="lf">—</b></div></div></div>
+<div class="twobtn"><button id="win" class="win">Gewonnen</button><button id="loss" class="loss">Verloren</button></div><div class="subs"><button id="undo" class="sub">Schritt zurück</button><button id="reset" class="sub">Account neu starten</button></div><p id="info" class="hint"></p></div></section>
+
+<section id="hist" class="page"><div class="card"><h2>Trade-Verlauf</h2><div id="list"></div></div></section>
+<section id="tree" class="page"><div class="card"><h2>Stammbaum der aktuellen Einstellungen</h2>
+<p class="treeNote">Hier siehst du ausschließlich den Baum aus deinen aktuell eingestellten Regeln. Wenn ein Zustand bereits an anderer Stelle existiert, wird er nicht doppelt aufgebaut. Stattdessen kannst du auf den Verweis klicken und springst direkt zu dem Knoten, an dem der Pfad weitergeht.</p>
+<div id="treeWarn" class="treeCut"></div>
+<div id="treeList" class="treeWrap"></div>
+</div></section>
+<div class="foot">Idealrechnung ohne Spread, Slippage, Kommissionen, Ausführungsabweichungen oder zusätzliche firmenspezifische Regeln.</div>
+</main>
+<script>
+(()=>{"use strict";const $=x=>document.getElementById(x),N=v=>Math.max(0,Number(v)||0),M=n=>(n<0?"-":"")+"$"+Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}),P=n=>(n*100).toFixed(2)+"%",D=x=>JSON.parse(JSON.stringify(x));let c,s,u=[];
+const read=()=>{let accountType=$("accountType").value;return{accountType,target:N($("target").value),daily:N($("daily").value),dd:N($("dd").value),type:$("type").value,lock:N($("lock").value),cons:Math.min(1,N($("cons").value)/100),cost:accountType==="challenge"?N($("challengeFee").value):N($("fundedCost").value),fee:accountType==="challenge"?N($("activationFee").value):0}};
+const fresh=()=>({pnl:0,peak:0,best:0,cost:c.cost,locked:c.type==="static",status:"live",trades:0,h:[]});
+const floor=x=>c.type==="static"?-c.dd:(x.locked?c.lock-c.dd:x.peak-c.dd);
+const eff=x=>c.cons>0?Math.max(c.target,x.best/c.cons):c.target;
+const stat=x=>{if(x.pnl<=floor(x)+1e-9)return"dead";let ok=c.cons<=0||x.pnl<=0||x.best<=c.cons*x.pnl+1e-9;return x.pnl>=eff(x)-1e-9&&ok?"pass":"live"};
+const next=x=>{let st=stat(x),e=eff(x);if(st!=="live")return{risk:0,reward:0,rr:0,q:0,hr:0,hg:0,e,dist:0};let dist=Math.max(0,x.pnl-floor(x)),cap=c.daily>0?c.daily:dist,risk=Math.max(0,Math.min(cap,dist)),rem=Math.max(0,e-x.pnl),reward=rem;if(c.cons>0)reward=Math.min(reward,c.cons*e);let q=dist>0?x.cost/dist:0;return{risk,reward,rr:risk>0?reward/risk:0,q,hr:q*reward,hg:q*risk,e,dist}};
+const go=(x,r)=>{let n=D(x),t=next(x);if(stat(x)!=="live")return n;n.trades++;if(r==="W"){n.pnl+=t.reward;n.cost+=t.hr;n.best=Math.max(n.best,t.reward);n.peak=Math.max(n.peak,n.pnl);if(c.type==="eod"&&!n.locked&&n.peak>=c.lock)n.locked=true}else{n.pnl-=t.risk;n.cost=Math.max(0,n.cost-t.hg)}n.status=stat(n);n.h.push({i:n.trades,r,prop:r==="W"?t.reward:-t.risk,hedge:r==="W"?-t.hr:t.hg,pnl:n.pnl,cost:n.cost,floor:floor(n),status:n.status});return n};
+const badge=x=>'<span class="badge '+x+'">'+(x==="live"?"Aktiv":x==="pass"?"Ziel erreicht":"Account verloren")+"</span>";
+function renderTree(){
+  const root=fresh(),MAX_DEPTH=24,MAX_UNIQUE=1000,seen=new Map();let unique=0,truncated=false;
+  const round=n=>Math.round((Number(n)||0)*100)/100;
+  const key=x=>[
+    round(x.pnl),round(x.peak),round(x.best),round(x.cost),x.locked?1:0,stat(x)
+  ].join("|");
+
+  const build=(x,branch,depth,path)=>{
+    x.status=stat(x);
+    const k=key(x);
+    if(seen.has(k)){
+      return {ref:true,targetId:seen.get(k),branch,x:D(x),depth,path};
+    }
+    if(unique>=MAX_UNIQUE||depth>MAX_DEPTH){
+      truncated=true;
+      return {cut:true,branch,x:D(x),depth,path};
+    }
+    const id=++unique;
+    seen.set(k,id);
+    const node={id,branch,x:D(x),depth,path,children:[]};
+    if(x.status==="live"){
+      node.children=[
+        build(go(x,"W"),"W",depth+1,path+"W"),
+        build(go(x,"L"),"L",depth+1,path+"L")
+      ];
+    }
+    return node;
+  };
+
+  const rootNode=build(root,"S",0,"");
+
+  const normalCard=n=>{
+    const x=n.x,t=next(x),bc=n.branch==="W"?"w":n.branch==="L"?"l":"s",bt=n.branch==="S"?"Start":n.branch;
+    const cls=n.branch==="W"?" winNode":n.branch==="L"?" lossNode":"";
+    const title=n.branch==="S"?"Start":("Pfad "+n.path.split("").join(" → "));
+    let endLine="";
+    if(x.status==="pass") endLine='Ziel erreicht · Gesamtkosten <b>'+M(x.cost+(c.fee||0))+'</b>';
+    else if(x.status==="dead") endLine='Account verloren · offene Kosten <b>'+M(x.cost)+'</b>';
+    else endLine='Nächster Trade: Prop <b>'+M(t.risk)+'</b> Risiko / <b>'+M(t.reward)+'</b> Gewinn<br>Echtgeld: <b>'+M(t.hr)+'</b> Risiko / <b>'+M(t.hg)+'</b> Gewinn';
+    return '<div id="tree-state-'+n.id+'" class="treeNodeCard'+cls+'"><div class="treeNodeHead"><div class="treeNodeTitle"><span class="branchTag '+bc+'">'+bt+'</span>'+title+'</div>'+badge(x.status)+'</div><div class="treeLines">Zustand <b>#'+n.id+'</b><br>Prop-P&L <b>'+M(x.pnl)+'</b> · Kosten <b>'+M(x.cost)+'</b><br>Fail-Floor <b>'+M(floor(x))+'</b><br>'+endLine+'</div></div>';
+  };
+
+  const refCard=n=>{
+    const bc=n.branch==="W"?"w":"l",bt=n.branch;
+    return '<button type="button" class="jumpRef" data-jump="'+n.targetId+'"><div class="jumpTitle"><span class="branchTag '+bc+'">'+bt+'</span>Gleicher Zustand wie #'+n.targetId+'</div><div class="jumpText">Dieser Pfad führt zu einem Zustand, der im Baum bereits vollständig dargestellt ist.</div><span class="jumpGo">→ Zu Zustand #'+n.targetId+' springen</span></button>';
+  };
+
+  const cutCard=n=>{
+    const bc=n.branch==="W"?"w":n.branch==="L"?"l":"s";
+    return '<div class="jumpRef"><div class="jumpTitle"><span class="branchTag '+bc+'">'+n.branch+'</span>Weitere Fortsetzung</div><div class="jumpText">Dieser Ast wurde nur aus technischen Gründen gekürzt.</div></div>';
+  };
+
+  const renderNode=n=>{
+    if(n.ref) return '<div class="branchCol">'+refCard(n)+'</div>';
+    if(n.cut) return '<div class="branchCol">'+cutCard(n)+'</div>';
+    let html='<div class="branchCol">'+normalCard(n);
+    if(n.children&&n.children.length){
+      html+='<div class="treeChildren">'+n.children.map(renderNode).join("")+'</div>';
+    }
+    html+='</div>';
+    return html;
+  };
+
+  $("treeWarn").textContent=truncated
+    ?"Sehr große Regelkombination: Der Baum wurde bei "+MAX_UNIQUE+" eindeutigen Zuständen bzw. "+MAX_DEPTH+" Trades begrenzt."
+    :"Identische Zustände werden nur einmal dargestellt. Verweise sind anklickbar und springen direkt zur vollständigen Fortsetzung.";
+  $("treeList").innerHTML='<div class="treeRoot">'+renderNode(rootNode)+'</div>';
+
+  $("treeList").querySelectorAll("[data-jump]").forEach(btn=>{
+    btn.onclick=()=>{
+      const id=btn.getAttribute("data-jump");
+      const target=$("tree-state-"+id);
+      if(!target)return;
+      target.scrollIntoView({behavior:"smooth",block:"center",inline:"center"});
+      target.classList.remove("flash");
+      void target.offsetWidth;
+      target.classList.add("flash");
+      setTimeout(()=>target.classList.remove("flash"),1500);
+    };
+  });
+}
+function render(){s.status=stat(s);let t=next(s),w=go(s,"W"),l=go(s,"L");$("pnl").textContent=M(s.pnl);$("oc").textContent=M(s.cost);$("fl").textContent=M(floor(s));$("peak").textContent=M(s.peak);$("pr").textContent=M(t.risk);$("pg").textContent=M(t.reward);$("rr").textContent=t.risk?"1 : "+t.rr.toFixed(2):"—";$("et").textContent=M(t.e);$("hq").textContent=P(t.q);$("hr").textContent=M(t.hr);$("hg").textContent=M(t.hg);$("hrr").textContent=t.hr?"1 : "+(t.hg/t.hr).toFixed(2):"—";$("st").innerHTML=badge(s.status);$("wp").textContent=M(w.pnl);$("wc").textContent=M(w.cost+(w.status==="pass"?c.fee:0));$("wf").textContent=M(floor(w));$("lp").textContent=M(l.pnl);$("lc").textContent=M(l.cost);$("lf").textContent=M(floor(l));$("info").textContent=s.status==="live"?("Aktuell sind "+M(s.cost)+" offene Kosten über "+M(t.dist)+" Restweg bis zum Fail-Floor abzusichern. Hedge-Quote: "+P(t.q)+"."):s.status==="pass"?("Ziel erreicht. Kostenbasis "+M(s.cost)+(c.fee?"; inkl. Erfolgsgebühr "+M(s.cost+c.fee):"")+"."):("Account am Fail-Floor. Offene Kostenbasis im Modell: "+M(s.cost)+".");$("list").innerHTML=s.h.length?s.h.slice().reverse().map(h=>'<article class="hist"><div class="histtop"><b>Trade '+h.i+' · '+(h.r==="W"?"Gewinn":"Verlust")+'</b>'+badge(h.status)+'</div><p>Prop Δ '+M(h.prop)+' · Hedge Δ '+M(h.hedge)+'<br>Prop-P&L '+M(h.pnl)+' · Kostenbasis '+M(h.cost)+' · Fail-Floor '+M(h.floor)+'</p></article>').join(""):'<div class="empty">Noch kein Trade erfasst.</div>';try{localStorage.setItem("ph-simple",JSON.stringify({c,s}))}catch(e){}}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));document.querySelectorAll(".page").forEach(x=>x.classList.remove("on"));b.classList.add("on");$(b.dataset.p).classList.add("on");if(b.dataset.p==="tree")renderTree()});
+$("type").onchange=()=>{$("lock").disabled=$("type").value==="static"};
+const syncAccountType=()=>{let funded=$("accountType").value==="funded";document.querySelectorAll(".challengeOnly").forEach(x=>x.classList.toggle("hidden",funded));document.querySelectorAll(".fundedOnly").forEach(x=>x.classList.toggle("hidden",!funded));};
+$("accountType").onchange=syncAccountType;
+$("apply").onclick=()=>{c=read();s=fresh();u=[];$("type").onchange();syncAccountType();render();document.querySelector('[data-p="calc"]').click()};
+$("win").onclick=()=>{if(stat(s)!=="live")return;u.push(D(s));s=go(s,"W");render()};
+$("loss").onclick=()=>{if(stat(s)!=="live")return;u.push(D(s));s=go(s,"L");render()};
+$("undo").onclick=()=>{if(u.length){s=u.pop();render()}};
+$("reset").onclick=()=>{s=fresh();u=[];render()};
+try{let z=JSON.parse(localStorage.getItem("ph-simple")||"null");if(z&&z.c&&z.s){c=z.c;s=z.s;c.accountType=c.accountType||"challenge";$("accountType").value=c.accountType;$("target").value=c.target;$("daily").value=c.daily;$("dd").value=c.dd;$("type").value=c.type;$("lock").value=c.lock;$("cons").value=c.cons*100;if(c.accountType==="funded"){$("fundedCost").value=c.cost}else{$("challengeFee").value=c.cost;$("activationFee").value=c.fee||0}}else{c=read();s=fresh()}}catch(e){c=read();s=fresh()}$("type").onchange();syncAccountType();render()})();
+</script></body></html>
