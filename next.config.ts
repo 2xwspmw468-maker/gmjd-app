@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: "export",
+  basePath: "/gmjd-app",
+  assetPrefix: "/gmjd-app/",
+  trailingSlash: true,
 };
 
 export default nextConfig;
